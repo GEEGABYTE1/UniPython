@@ -46,13 +46,14 @@ class Script:
                 result = result.split(', ')
                 result_address = result[0]
                 result_string = result[-1]
-                result2 = str(input('Deired Token Address: '))
+                result2 = str(input('Desired Token Address: '))
+                result2 = result2.split(', ')
                 result2_address = result2[0]
                 result2_string = result2[-1]
                 if result == None or result2 == None:
                     print("Transaction not found")
                 else:
-                    price_input = self.uniswap.get_price_input(result2, result, 10**18)
+                    price_input = self.uniswap.get_price_input(result2_address, result_address, 10**18)
                     print("1 {} = {} {}".format(result_string, price_input, result2_string))
         
 
