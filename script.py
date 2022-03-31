@@ -56,9 +56,22 @@ class Script:
                     price_input = self.uniswap.get_price_input(result2_address, result_address, 10**18)
                     print("1 {} = {} {}".format(result_string, price_input, result2_string))
         
-
-
-
+            elif user_prompt == '/conversion':
+                result = str(input('Root Token: '))
+                result = result.split(', ')
+                result_address = result[0]
+                result_string = result[-1]
+                result2 = str(input('Desired Token Address: '))
+                result2 = result2.strip(', ')
+                result2_address = result2[0]
+                result2_string = result2[-1]
+                if result == None or result2 == None:
+                    print("Token not found")
+                else:
+                    user_amount = int(input('How many {} would you like to convert to {}: '.format(result_string, result2_string)))
+                    price_output = self.uniswap.get_price_output(result-address, result2_string, user_amount * 10**18)
+                    print('{root} {root_val} = {des} {des_val}'.format(root=result_string, root_val=1, des=result2_string, des_val=user_amount))
+                    
 
 
 
