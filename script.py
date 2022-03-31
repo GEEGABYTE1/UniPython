@@ -1,11 +1,11 @@
 from termcolor import colored
 from uniswap import Uniswap
-from viewing_token import ViewCoin
+
 
 
 # ENV Var 
 import os 
-os.environ['PROVIDER'] = 'https://rinkeby.infura.io/v3/bb00f20d72fe41ddb707d1b562365919'
+os.environ['PROVIDER'] = 'https://mainnet.infura.io/v3/bb00f20d72fe41ddb707d1b562365919'
 
 
 class Script:
@@ -41,14 +41,19 @@ class Script:
             user_prompt = user_prompt.lower()
 
             if user_prompt == '/rate':
-                session = ViewCoin()
-                result = session.view_coin()
-                result2 = session.view_coin()
+    
+                result = str(input('Root Token: '))         # Address, [coin_name]
+                result = result.split(', ')
+                result_address = result[0]
+                result_string = result[-1]
+                result2 = str(input('Deired Token Address: '))
+                result2_address = result2[0]
+                result2_string = result2[-1]
                 if result == None or result2 == None:
                     print("Transaction not found")
                 else:
-                    price_input = self.uniswap.get_price_input(result, result2, 10**18)
-                    print("1 ETH = {} {}".format(price_input, result2))
+                    price_input = self.uniswap.get_price_input(result2, result, 10**18)
+                    print("1 {} = {} {}".format(result_string, price_input, result2_string))
         
 
 
