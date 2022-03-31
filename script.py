@@ -1,5 +1,6 @@
 from termcolor import colored
 from uniswap import Uniswap
+from viewing_token import ViewCoin
 
 
 # ENV Var 
@@ -29,9 +30,28 @@ class Script:
                 self.version = int_version
         except:
             pass
-        web3_provider = str(input("Web3 Provider (in HTTP Format): "))
-        self.provider = web3_provider.strip(' ')
+        #web3_provider = str(input("Web3 Provider (in HTTP Format): "))
+        #self.provider = web3_provider.strip(' ')
         self.uniswap = Uniswap(address=self.address, private_key=self.private_key, version=self.version, provider=self.provider)
+        
+        while True:
+            prompt_string = colored(': ', 'green')
+            user_prompt = str(input(prompt_string))
+            user_prompt.strip(' ')
+            user_prompt = user_prompt.lower()
+
+            if user_prompt == '/rate':
+                session = ViewCoin()
+                result = session.view_coin()
+                result2 = session.view_coin()
+                if result == None or result2 == None:
+                    print("Transaction not found")
+                else:
+                    price_input = self.uniswap.get_price_input(result, result2, 10**18)
+                    print("1 ETH = {} {}".format(price_input, result2))
+        
+
+
 
 
 
