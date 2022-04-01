@@ -5,7 +5,7 @@ def quicksort(lst, start, end):
         return lst 
     else:
         pivot_idx = randrange(start, end)
-        pivot_element = lst[pivot_element]
+        pivot_element = lst[pivot_idx]
         lst[end], lst[pivot_idx] = lst[pivot_idx], lst[end]
         lesser_than_pointer = start 
         
