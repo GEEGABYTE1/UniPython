@@ -1,7 +1,11 @@
 from random import randrange 
 
+
+returned_lst = []
+
 def quicksort(lst, start, end):
     if start >= end:
+        returned_lst = lst
         return lst 
     else:
         pivot_idx = randrange(start, end)

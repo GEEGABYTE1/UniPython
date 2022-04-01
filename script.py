@@ -1,6 +1,6 @@
 from termcolor import colored
 from uniswap import Uniswap
-from quicksort import quicksort
+from quicksort import quicksort, returned_lst
 
 
 
@@ -96,7 +96,9 @@ class Script:
                     
                     start = 0 
                     end = len(numerical_val) - 1
-                    sorted_results = quicksort(numerical_val, start, end)
+                    quicksort(numerical_val, start, end)
+                    sorted_results = numerical_val
+                    
                     
                     count = 1 
                     for result in sorted_results:
