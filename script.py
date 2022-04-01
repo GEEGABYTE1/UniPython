@@ -74,7 +74,7 @@ class Script:
                     print('{root} {root_val} = {des} {des_val}'.format(root=result_string, root_val=1, des=result2_string, des_val=user_amount))
             
             elif user_prompt == '/sbv'  :        # Sort by Val
-                desired_root = str(input('Desired Token Address: '))          # Address, [coin_name]\
+                desired_root = str(input('Desired Token Address: '))          # Address, [coin_name]
                 if not ',' in desired_root or not ', ' in desired_root:
                     print("Invalid Command")
                 else:
@@ -84,9 +84,12 @@ class Script:
                     time_range = int(input('How many transactions would you like to sort: '))
                     values = []
                     for i in range(time_range):
-                        transaction_hash = str(input('Transaction Hash: '))
+                        transaction_hash = str(input('Token Metadata: '))                 # Address, [coin_name]
+                        transaction_string = transaction_hash.split(', ')
+                        transaction_string_name = transaction_string[-1]
+                        transaction_hash = transaction_string[0]
                         result = self.uniswap.get_price_input(result2_address, transaction_hash, 10**18)
-                        dictionary = {'name': result2_string, 'Transaction': result2_address, 'Conversion':result}
+                        dictionary = {'name': transaction_string_name, 'Transaction': transaction_hash, 'Conversion':result}
                         values.append(dictionary)
                     
                     numerical_val = []
@@ -101,14 +104,21 @@ class Script:
                     
                     
                     count = 1 
-                    for result in sorted_results:
-                        for dict in values:
-                            if dict['Conversion'] == result:
-                                print('-'*24)
-                                print('{count}: {name} - {conversion}'.format(count=count, name=dict['name'], conversion=result))
-                                count += 1
-                            else:
-                                continue 
+                    if len(sorted_results) == None:
+                        print("Nothing was found")
+                    else:
+                        print('\n')
+                        print(colored('*'*24), 'white')
+                        print(colored("Rates for 1 {}".format(result2_string), 'cyan'))
+                        print('\n')
+                        for result in sorted_results:
+                            for dict in values:
+                                if dict['Conversion'] == result:
+                                    print('-'*24)
+                                    print('{count}: {name} - {conversion}'.format(count=count, name=dict['name'], conversion=result))
+                                    count += 1
+                                else:
+                                    continue 
                                                 
                             
                         
