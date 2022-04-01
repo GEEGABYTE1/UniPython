@@ -1,5 +1,6 @@
 from termcolor import colored
 from uniswap import Uniswap
+from quicksort import quicksort
 
 
 
@@ -71,8 +72,46 @@ class Script:
                     user_amount = int(input('How many {} would you like to convert to {}: '.format(result_string, result2_string)))
                     price_output = self.uniswap.get_price_output(result-address, result2_string, user_amount * 10**18)
                     print('{root} {root_val} = {des} {des_val}'.format(root=result_string, root_val=1, des=result2_string, des_val=user_amount))
+            
+            elif user_prompt == '/sbv'  :        # Sort by Val
+                desired_root = result2 = str(input('Desired Token Address: '))
+                result2 = result2.strip(', ')
+                result2_address = result2[0]
+                result2_string = result2[-1]
+                time_range = int(input('How many transactions would you like to view: '))
+                values = []
+                for i in range(time_range):
+                    transaction_hash = str(input('Transaction Hash: '))
+                    result = self.uniswap(result2_address, transaction_hash, 10**18)
+                    dictionary = {'name': result2_string, 'Transaction': result2_address, 'Conversion':result}
+                    values.append(dictionary)
+                
+                numerical_val = []
+                for val in values:
+                    conversion = values['Conversion']
+                
+                start = 0 
+                end = len(numerical_val) - 1
+                sorted_results = quicksort(numerical_val, start, end)
+                
+                count = 1 
+                for result in sorted_results:
+                    for dict in values:
+                        if dict['Conversion'] == result:
+                            print('-'*24)
+                            print('{count}: {name} - {conversion}'.format(count=count, name=dict['name'], conversion=result))
+                            count += 1
+                        else:
+                            continue 
+                                            
+                            
+                        
+                
+
+                    
                     
 
+                    
 
 
 test = Script()
