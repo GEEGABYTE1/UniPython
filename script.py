@@ -393,6 +393,15 @@ class Script:
                 except:
                     print(colored('Something Went Wrong', 'red'))
 
+            elif user_prompt == '/eth_balcon' and self.version == 1:      # Fetches balance of Eth in an Exchange Contral
+                desired_user_contract = str(input('Desired User Contract: '))
+                desired_user_contract.strip(' ')
+                result = self.uniswap.get_ex_eth_balance(desired_user_contract)
+                print('{desired} = {bal} ETH'.format(desired=desired_user_contract, bal=result))
+            
+                
+
+
                         
                 
 
