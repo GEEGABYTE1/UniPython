@@ -116,7 +116,7 @@ class Script:
                 result_address = result[0]
                 result_string = result[-1]
                 result2 = str(input('Desired Token Address: '))
-                result2 = result2.strip(', ')
+                result2 = result2.split(', ')
                 result2_address = result2[0]
                 result2_string = result2[-1]
                 if result == None or result2 == None:
