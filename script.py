@@ -57,7 +57,7 @@ class Script:
         quicksort(values, 0, len(values) - 1)
         for dictionary in values:
             print('\n')
-            print(colored('Rates to Convert: {}'.format(token_name, 'green')))
+            print(colored('Rates to Convert: {}'.format(token_name)), 'green')
             print('-'*24)
             print('{name} ~ {rate}'.format(name=dictionary['Token'], rate=dictionary['Conversion Rate']))
     
@@ -122,14 +122,14 @@ class Script:
             elif user_prompt == '/conversion':
                 result = str(input('Root Token: '))
                 if ',' not in result:
-                    print('Syntax Error', 'red')
+                    print(colored('Syntax Error', 'red'))
                 else:
                     result = result.split(', ')
                     result_address = result[0]
                     result_string = result[-1]
                     result2 = str(input('Desired Token Address: '))
                     if ',' not in result2:
-                        print("Syntax Error", 'red')
+                        print(colored("Syntax Error", 'red'))
                     else:
                         result2 = result2.split(', ')
                         result2_address = result2[0]
