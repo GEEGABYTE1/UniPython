@@ -1,5 +1,4 @@
-from asyncio.subprocess import SubprocessStreamProtocol
-from re import I
+
 from termcolor import colored
 from uniswap import Uniswap
 from quicksort import quicksort, returned_lst
@@ -16,7 +15,7 @@ class Script:
     address = 'None'
     private_key = 'None'
     version = 2
-    provider = os.environ.get('PROVIDER')           # Switch back to None for Production
+    provider = None
     past_inserts = []
 
     def fetch_indices(self):
@@ -80,8 +79,8 @@ class Script:
                 self.version = int_version
         except:
             pass
-        #web3_provider = str(input("Web3 Provider (in HTTP Format): "))
-        #self.provider = web3_provider.strip(' ')
+        web3_provider = str(input("Web3 Provider (in HTTP Format): "))
+        self.provider = web3_provider.strip(' ')
         try:
             self.uniswap = Uniswap(address=self.address, private_key=self.private_key, version=self.version, provider=self.provider)
         except:
@@ -446,7 +445,7 @@ class Script:
             
             elif user_prompt == '/quit':
                 break
-            
+
             else:
                 print(colored('Invalid Command', 'red'))
 
