@@ -175,14 +175,7 @@ class Script:
                             user_address = user_address.strip(' ')
                             fee_prompt = str(input('Would you like to add a fee pool? type(y/n)? '))
                             if fee_prompt == 'y':
-                                user_fee = str(input('Type desired Fee (in percentage): '))
-                                user_fee = user_fee.strip(' ')
-                                user_fee = user_fee.strip('%')
-                                if len(user_fee) > 1:
-                                    fee = float(user_fee)
-                                else:
-                                    fee = int(user_fee)
-                                fee *= 10000
+                                fee = 500
                                 transaction = self.uniswap.make_trade(sell_hash_address, desired_hash_address, user_quantity * 10 ** 18, user_address, fee=fee)
                             else:
                                 transaction = self.uniswap.make_trade(sell_hash_address, desired_hash_address, user_quantity * 10 ** 18, user_address)
@@ -199,14 +192,7 @@ class Script:
                     else:
                         fee_prompt = str(input('Would you like to add a fee pool? type(y/n)? '))
                         if fee_prompt == 'y':
-                            user_fee = str(input('Type desired Fee (in percentage): '))
-                            user_fee = user_fee.strip(' ')
-                            user_fee = user_fee.strip('%')
-                            if len(user_fee) > 1:
-                                fee = float(user_fee)
-                            else:
-                                fee = int(user_fee)
-                            fee *= 10000
+                            fee = 500
                             transaction = self.uniswap.make_trade(sell_hash_address, desired_hash_address, user_quantity * 10 ** 18, fee=fee)
 
                         else:
@@ -354,7 +340,58 @@ class Script:
                 except:
                     print(colored('Something Went Wrong', 'red'))
 
+            elif user_prompt == '/buy' and self.version == 3:
+                transaction_done = False
+                try:
+                    desired_hash = str(input('Desired Token Hash: '))   # Addres, [coin_name]
+                    desired_hash.strip(' ')
+                    desired_hash_lst = desired_hash.split(', ')
+                    current_hash = str(input('Hash of Token that will be Used to Buy: '))
+                    current_hash = current_hash.strip(' ')
+                    current_hash_lst = current_hash.split(', ')
 
+
+                    desired_hash_address = desired_hash_lst[0]
+                    desired_hash_name = desired_hash_lst[-1]
+                    current_hash_address = current_hash_lst[0]
+                    current_hash_name = current_hash_lst[-1]
+
+                    user_quantity = str(input('Amount: '))
+                    if len(user_quantity) > 1:
+                        user_quantity = float(user_quantity)
+                    else:
+                        user_quantity = int(user_quantity)
+                    
+                    while True:
+                        user_send_prompt = str(input('Would you like to send the bought token to a user? type (y/n): '))
+                        if user_send_prompt == 'y':
+                            user_address = str(input('Desired User Hash: '))
+                            user_address = user_address.strip(' ')
+                            fee_prompt = str(input('Would you like to add a fee pool? type(y/n)? '))
+                            if fee_prompt == 'y':
+                                fee = 500
+                                transaction = self.uniswap.make_trade_output(desired_hash_address, current_hash_address, user_quantity*10**18, user_address, fee=fee)
+                            else:
+                                transaction = self.uniswap.make_trade_output(desired_hash_address, current_hash_address, user_quantity*10**18, user_address, fee=fee)
+                            print('{amount} of {desired} was bought with {current} and sent to {address}'.format(amount=user_quantity, desired=desired_hash_name, current=current_hash_name, address=user_address))
+                            transaction_done = True 
+                            break 
+                        elif user_send_prompt == 'n':
+                            break 
+                        else:
+                            continue 
+                    if transaction_done == True:
+                        pass 
+                    else:
+                        fee_prompt = str(input('Would you like to add a fee pool? type(y/n)? '))
+                        if fee_prompt == 'y':
+                            fee = 500
+                            transaction = self.uniswap.make_trade_output(desired_hash_address, current_hash_address, user_quantity*10**18, fee=fee)
+                        else:
+                            transaction = self.uniswap.make_trade_output(desired_hash_address, current_hash_address, user_quantity*10**18)
+                        print('{amount} of {desired} was bought with {current}'.format(amount=user_quantity, desired=desired_hash_name, current=current_hash_name))
+                except:
+                    print(colored('Something Went Wrong', 'red'))
 
                         
                 
