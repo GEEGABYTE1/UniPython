@@ -1,3 +1,4 @@
+from re import I
 from termcolor import colored
 from uniswap import Uniswap
 from quicksort import quicksort, returned_lst
@@ -25,10 +26,10 @@ class Script:
         while True:
             random_idx = random.randint(0, len(self.past_inserts))
             if random_idx % 2 == 0:
-                self.root_idx = random_idx
+                root_idx = random_idx
             if random_idx % 2 == 1:
-                self.desired_idx = random_idx 
-            if self.desired_idx != None and self.root_idx != None:
+                desired_idx = random_idx 
+            if desired_idx != None and root_idx != None:
                 break
     
         return root_idx, desired_idx
@@ -40,8 +41,8 @@ class Script:
         if goal_indices == None:
             return None
         else:
-            token_hash = goal_indices[-1]['Address']
-            token_name = goal_indices[-1]['Name']
+            token_hash = self.past_inserts[goal_indices[-1]]['Address']
+            token_name = self.past_inserts[goal_indices[-1]]['Name']
             for dictionary_idx in range(len(self.past_inserts)):
                 dictionary = self.past_inserts[dictionary_idx]
                 if dictionary_idx % 2 == 1:
@@ -55,11 +56,10 @@ class Script:
         
         quicksort(values, 0, len(values) - 1)
         for dictionary in values:
-            for token, rate in dictionary.items():
-                print('\n')
-                print(colored('Rates to Convert to: {}'.format(token_name), 'green'))
-                print('-'*24)
-                print('{name} ~ {rate}'.format(name=token, rate=rate))
+            print('\n')
+            print(colored('Rates to Convert: {}'.format(token_name, 'green')))
+            print('-'*24)
+            print('{name} ~ {rate}'.format(name=dictionary['Token'], rate=dictionary['Conversion Rate']))
     
         
     
@@ -81,7 +81,10 @@ class Script:
             pass
         #web3_provider = str(input("Web3 Provider (in HTTP Format): "))
         #self.provider = web3_provider.strip(' ')
-        self.uniswap = Uniswap(address=self.address, private_key=self.private_key, version=self.version, provider=self.provider)
+        try:
+            self.uniswap = Uniswap(address=self.address, private_key=self.private_key, version=self.version, provider=self.provider)
+        except:
+            print(colored('Account not Found', 'red'))
         
         while True:
             sbv_prompt = self.history_sbv()
@@ -97,39 +100,51 @@ class Script:
             if user_prompt == '/rate':
     
                 result = str(input('Root Token: '))         # Address, [coin_name]
-                result = result.split(', ')
-                result_address = result[0]
-                result_string = result[-1]
-                result2 = str(input('Desired Token Address: '))
-                result2 = result2.split(', ')
-                result2_address = result2[0]
-                result2_string = result2[-1]
-                if result == None or result2 == None:
-                    print("Transaction not found")
+                if ',' not  in result:
+                    print(colored('Syntax Error', 'red'))
                 else:
-                    price_input = self.uniswap.get_price_input(result2_address, result_address, 10**18)
-                    print("1 {} = {} {}".format(result_string, price_input, result2_string))
+                    result = result.split(', ')
+                    result_address = result[0]
+                    result_string = result[-1]
+                    result2 = str(input('Desired Token Address: '))
+                    if ',' not in result2:
+                        print(colored('Syntax Error', 'red'))
+                    else:
+                        result2 = result2.split(', ')
+                        result2_address = result2[0]
+                        result2_string = result2[-1]
+                        if result == None or result2 == None:
+                            print("Transaction not found")
+                        else:
+                            price_input = self.uniswap.get_price_input(result2_address, result_address, 10**18)
+                            print("1 {} = {} {}".format(result_string, price_input, result2_string))
         
             elif user_prompt == '/conversion':
                 result = str(input('Root Token: '))
-                result = result.split(', ')
-                result_address = result[0]
-                result_string = result[-1]
-                result2 = str(input('Desired Token Address: '))
-                result2 = result2.split(', ')
-                result2_address = result2[0]
-                result2_string = result2[-1]
-                if result == None or result2 == None:
-                    print("Token not found")
+                if ',' not in result:
+                    print('Syntax Error', 'red')
                 else:
-                    root_dictionary = {'Address': result_address, 'Name':result_string}
-                    desired_dictionary = {'Address': result2_address, 'Name': result2_string}
-                    self.past_inserts.append(root_dictionary)
-                    self.past_inserts.append(desired_dictionary)
-                    user_amount = int(input('How many {} would you like to convert to {}: '.format(result_string, result2_string)))
-                    price_output = self.uniswap.get_price_output(result-address, result2_string, user_amount * 10**18)
-                    print('{root} {root_val} = {des} {des_val}'.format(root=result_string, root_val=1, des=result2_string, des_val=user_amount))
-            
+                    result = result.split(', ')
+                    result_address = result[0]
+                    result_string = result[-1]
+                    result2 = str(input('Desired Token Address: '))
+                    if ',' not in result2:
+                        print("Syntax Error", 'red')
+                    else:
+                        result2 = result2.split(', ')
+                        result2_address = result2[0]
+                        result2_string = result2[-1]
+                        if result == None or result2 == None:
+                            print("Token not found")
+                        else:
+                            root_dictionary = {'Address': result_address, 'Name':result_string}
+                            desired_dictionary = {'Address': result2_address, 'Name': result2_string}
+                            self.past_inserts.append(root_dictionary)
+                            self.past_inserts.append(desired_dictionary)
+                            user_amount = int(input('How many {} would you like to convert to {}: '.format(result_string, result2_string)))
+                            price_output = self.uniswap.get_price_output(result_address, result2_address, user_amount * 10**18)
+                            print('{root} {root_val} = {des} {des_val}'.format(root=result_string, root_val=1, des=result2_string, des_val=price_output))
+                    
             elif user_prompt == '/sbv'  :        # Sort by Val
                 desired_root = str(input('Desired Token Address: '))          # Address, [coin_name]
                 if not ',' in desired_root or not ', ' in desired_root:
