@@ -405,7 +405,13 @@ class Script:
                 result = self.uniswap.get_ex_token_balance(desired_user_contract)
                 print('{desired} = {result}'.format(desired=desired_user_contract, result=result))
 
-                            
+            elif user_prompt == '/ex_eth' and self.version == 1:
+                desired_user_contract = str(input('Desired User Contract: '))      
+                desired_user_contract.strip(' ')
+                result = self.uniswap.get_exchange_rate(desired_user_contract)
+                print('{bal}/ETH = {result}'.format(bal=desired_user_contract, result=result))
+                
+                                
 
 
                         
