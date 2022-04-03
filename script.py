@@ -399,7 +399,13 @@ class Script:
                 result = self.uniswap.get_ex_eth_balance(desired_user_contract)
                 print('{desired} = {bal} ETH'.format(desired=desired_user_contract, bal=result))
             
-                
+            elif user_prompt == '/bal_contract' and self.version == 1:  # Fetches Balance of a Token in an Exchange Contract
+                desired_user_contract = str(input('Desired User Contract: '))      
+                desired_user_contract.strip(' ')
+                result = self.uniswap.get_ex_token_balance(desired_user_contract)
+                print('{desired} = {result}'.format(desired=desired_user_contract, result=result))
+
+                            
 
 
                         
