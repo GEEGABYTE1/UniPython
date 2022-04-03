@@ -394,24 +394,46 @@ class Script:
                     print(colored('Something Went Wrong', 'red'))
 
             elif user_prompt == '/eth_balcon' and self.version == 1:      # Fetches balance of Eth in an Exchange Contral
-                desired_user_contract = str(input('Desired User Contract: '))
+                desired_user_contract = str(input('Desired User Contract: '))  # Address, [coin_name]
                 desired_user_contract.strip(' ')
-                result = self.uniswap.get_ex_eth_balance(desired_user_contract)
-                print('{desired} = {bal} ETH'.format(desired=desired_user_contract, bal=result))
+                desired_user_contract = desired_user_contract.split(', ')
+                desired_user_address = desired_user_contract[0]
+                desired_user_name = desired_user_contract[-1]
+    
+                result = self.uniswap.get_ex_eth_balance(desired_user_address)
+                print('{desired} = {bal} ETH'.format(desired=desired_user_name, bal=result))
             
             elif user_prompt == '/bal_contract' and self.version == 1:  # Fetches Balance of a Token in an Exchange Contract
-                desired_user_contract = str(input('Desired User Contract: '))      
+                desired_user_contract = str(input('Desired User Contract: '))     # Address, [coin_name] 
                 desired_user_contract.strip(' ')
-                result = self.uniswap.get_ex_token_balance(desired_user_contract)
-                print('{desired} = {result}'.format(desired=desired_user_contract, result=result))
+                desired_user_contract = desired_user_contract.split(', ')
+                desired_user_address = desired_user_contract[0]
+                desired_user_name = desired_user_contract[-1]
+                result = self.uniswap.get_exchange_rate(desired_user_address)
+                result = self.uniswap.get_ex_token_balance(desired_user_address)
+                print('{desired} = {result}'.format(desired=desired_user_name, result=result))
 
-            elif user_prompt == '/ex_eth' and self.version == 1:
-                desired_user_contract = str(input('Desired User Contract: '))      
+            elif user_prompt == '/ex_eth' and self.version == 1:                            # Address, [coin_name]
+                desired_user_contract = str(input('Desired User Contract: '))          # Exchange rate for Eth
                 desired_user_contract.strip(' ')
-                result = self.uniswap.get_exchange_rate(desired_user_contract)
-                print('{bal}/ETH = {result}'.format(bal=desired_user_contract, result=result))
-                
-                                
+                desired_user_contract = desired_user_contract.split(', ')
+                desired_user_address = desired_user_contract[0]
+                desired_user_name = desired_user_contract[-1]
+                result = self.uniswap.get_exchange_rate(desired_user_address)
+                print('{bal}/ETH = {result}'.format(bal=desired_user_name, result=result))
+            
+            elif user_prompt == '/add_li' and self.version == 1:
+                desired_user_contract = str(input('Desired User Contract Hash: '))     #Address, [coin_name]
+                desired_user_contract = desired_user_contract.split(', ')
+                desired_user_address = desired_user_contract[0]
+                desired_user_name = desired_user_contract[-1]
+                try:
+                    self.uniswap.add_liquidity(desired_user_address, 1*10**18)
+                    print(colored('Liquidity Added to {} successfully!'.format(desired_user_name)))
+                except:
+                    print(colored('Liquidity Unsuccessful', 'red'))
+            
+            
 
 
                         
