@@ -162,7 +162,10 @@ class Script:
                     desired_hash_name = desired_hash_lst[-1]
 
                     user_quantity = str(input("Amount: "))
-                    user_quantity = int(user_quantity)
+                    if len(user_quantity) > 1:
+                        user_quantity = float(user_quantity)
+                    else:
+                        user_quantity = int(user_quantity)
 
                     while True:
                         user_send_prompt = str(input('Would you like to send resulting conversion to an address? type (y/n): '))
@@ -185,9 +188,6 @@ class Script:
                     else:
                         transaction = self.uniswap.make_trade(sell_hash_address, desired_hash_address, user_quantity * 10 ** 18)
                         print(colored('{amount} of {root} was sold for {desired}'.format(amount=user_quantity, root=sell_hash_name, desired=desired_hash_name), 'green'))
-
-
-
 
 
                 except:
