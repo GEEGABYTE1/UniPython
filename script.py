@@ -433,7 +433,24 @@ class Script:
                 except:
                     print(colored('Liquidity Unsuccessful', 'red'))
             
+            elif user_prompt == '/remove_li' and self.version == 1:
+                desired_user_contract = str(input('Desired User Contract Hash: '))     #Address, [coin_name]
+                desired_user_contract = desired_user_contract.split(', ')
+                desired_user_address = desired_user_contract[0]
+                desired_user_name = desired_user_contract[-1]
+                try:
+                    self.uniswap.remove_liquidity(desired_user_address, 1*10**18)
+                    print(colored('Liquidity Removed from {} successfully!'.format(desired_user_name)))
+                except:
+                    print(colored('Liquidity Unsuccessful', 'red'))
             
+            elif user_prompt == '/quit':
+                break
+            
+            else:
+                print(colored('Invalid Command', 'red'))
+
+                                
 
 
                         
