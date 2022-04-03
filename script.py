@@ -17,7 +17,9 @@ class Script:
     provider = os.environ.get('PROVIDER')           # Switch back to None for Production
     past_inserts = []
 
-    def fetch_indexes(self):
+    def fetch_indices(self):
+        if len(self.past_inserts) == 0:
+            return None
         root_idx = None 
         desired_idx = None 
         while True:
@@ -28,9 +30,38 @@ class Script:
                 self.desired_idx = random_idx 
             if self.desired_idx != None and self.root_idx != None:
                 break
+    
+        return root_idx, desired_idx
 
             
-            
+    def history_sbv(self):
+        goal_indices = self.fetch_indices()
+        values = []
+        if goal_indices == None:
+            return None
+        else:
+            token_hash = goal_indices[-1]['Address']
+            token_name = goal_indices[-1]['Name']
+            for dictionary_idx in range(len(self.past_inserts)):
+                dictionary = self.past_inserts[dictionary_idx]
+                if dictionary_idx % 2 == 1:
+                    continue 
+                else:
+                    dictionary_hash = dictionary['Address']
+                    dictionary_name = dictionary['Name']
+                    result = self.uniswap.get_price_input(dictionary_hash, token_hash, 10**18)
+                    result_dict = {'Token': dictionary_name, 'Conversion Rate': result}
+                    values.append(result_dict)
+        
+        quicksort(values, 0, len(values) - 1)
+        for dictionary in values:
+            for token, rate in dictionary.items():
+                print('\n')
+                print(colored('Rates to Convert to: {}'.format(token_name), 'green'))
+                print('-'*24)
+                print('{name} ~ {rate}'.format(name=token, rate=rate))
+    
+        
     
 
     def __init__(self):
@@ -53,6 +84,11 @@ class Script:
         self.uniswap = Uniswap(address=self.address, private_key=self.private_key, version=self.version, provider=self.provider)
         
         while True:
+            sbv_prompt = self.history_sbv()
+            if sbv_prompt == None:
+                pass 
+            else:
+                print('\n')
             prompt_string = colored(': ', 'green')
             user_prompt = str(input(prompt_string))
             user_prompt.strip(' ')
