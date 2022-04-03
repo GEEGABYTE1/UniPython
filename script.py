@@ -339,6 +339,16 @@ class Script:
                 except:
                     print(colored('Something Went Wrong', 'red'))
 
+            elif user_prompt == '/cv_uni':
+                desired_uni_version = str(input('Please insert the desired version (1 - 3): '))
+                try:
+                    version = int(desired_uni_version)
+                    self.version = version
+                    self.uniswap = Uniswap(address=self.address, private_key=self.private_key, version=self.version, provider=self.provider)
+                    print(colored('Version has been successfully changed to: {}'.format(self.version), 'green'))
+            
+                except:
+                    print(colored('Incorrect Command', 'red'))
             elif user_prompt == '/buy' and self.version == 3:
                 transaction_done = False
                 try:
