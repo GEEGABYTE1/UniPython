@@ -1,3 +1,4 @@
+from asyncio.subprocess import SubprocessStreamProtocol
 from re import I
 from termcolor import colored
 from uniswap import Uniswap
@@ -144,6 +145,53 @@ class Script:
                             user_amount = int(input('How many {} would you like to convert to {}: '.format(result_string, result2_string)))
                             price_output = self.uniswap.get_price_output(result_address, result2_address, user_amount * 10**18)
                             print('{root} {root_val} = {des} {des_val}'.format(root=result_string, root_val=1, des=result2_string, des_val=price_output))
+            
+            elif user_prompt == '/sell' and self.version != 3:
+                transaction_done = False
+                try:
+                    sell_hash = str(input('Hash of Token wanted to Convert: ')) #Address, [coin_name]
+                    sell_hash = sell_hash.strip(' ')
+                    sell_hash_lst = sell_hash.split(', ')
+                    desired_hash = str(input('Desired Token Hash: '))
+                    desired_hash = desired_hash.strip(' ')
+                    desired_hash_lst = desired_hash.split(', ')
+
+                    sell_hash_address = sell_hash_lst[0]
+                    sell_hash_name = sell_hash_lst[-1]
+                    desired_hash_address = desired_hash_lst[0]
+                    desired_hash_name = desired_hash_lst[-1]
+
+                    user_quantity = str(input("Amount: "))
+                    user_quantity = int(user_quantity)
+
+                    while True:
+                        user_send_prompt = str(input('Would you like to send resulting conversion to an address? type (y/n): '))
+                        user_send_prompt = user_send_prompt.strip(' ')
+                        if user_send_prompt == 'y':
+                            user_address = str(input('Desired User Hash: '))
+                            user_address = user_address.strip(' ')
+                            transaction = self.uniswap.make_trade(sell_hash_address, desired_hash_address, user_quantity * 10 ** 18, user_address)
+                            print(colored('{amount} of {root} was sold for {desired} and sent to {address}'.format(amount=user_quantity, root=sell_hash_name, desired=desired_hash_name, address=user_address), 'green'))
+                            transaction_done = True
+                            break 
+                        elif user_send_prompt == 'n':
+                            break 
+                        else:
+                            continue 
+                    
+                    
+                    if transaction_done == True:
+                        pass 
+                    else:
+                        transaction = self.uniswap.make_trade(sell_hash_address, desired_hash_address, user_quantity * 10 ** 18)
+                        print(colored('{amount} of {root} was sold for {desired}'.format(amount=user_quantity, root=sell_hash_name, desired=desired_hash_name), 'green'))
+
+
+
+
+
+                except:
+                    print(colored('Something Went Wrong', 'red'))
                     
             elif user_prompt == '/sbv'  :        # Sort by Val
                 desired_root = str(input('Desired Token Address: '))          # Address, [coin_name]
