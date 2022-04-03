@@ -1,6 +1,7 @@
 from termcolor import colored
 from uniswap import Uniswap
 from quicksort import quicksort, returned_lst
+import random
 
 
 
@@ -14,6 +15,22 @@ class Script:
     private_key = 'None'
     version = 2
     provider = os.environ.get('PROVIDER')           # Switch back to None for Production
+    past_inserts = []
+
+    def fetch_indexes(self):
+        root_idx = None 
+        desired_idx = None 
+        while True:
+            random_idx = random.randint(0, len(self.past_inserts))
+            if random_idx % 2 == 0:
+                self.root_idx = random_idx
+            if random_idx % 2 == 1:
+                self.desired_idx = random_idx 
+            if self.desired_idx != None and self.root_idx != None:
+                break
+
+            
+            
     
 
     def __init__(self):
@@ -69,6 +86,10 @@ class Script:
                 if result == None or result2 == None:
                     print("Token not found")
                 else:
+                    root_dictionary = {'Address': result_address, 'Name':result_string}
+                    desired_dictionary = {'Address': result2_address, 'Name': result2_string}
+                    self.past_inserts.append(root_dictionary)
+                    self.past_inserts.append(desired_dictionary)
                     user_amount = int(input('How many {} would you like to convert to {}: '.format(result_string, result2_string)))
                     price_output = self.uniswap.get_price_output(result-address, result2_string, user_amount * 10**18)
                     print('{root} {root_val} = {des} {des_val}'.format(root=result_string, root_val=1, des=result2_string, des_val=user_amount))
